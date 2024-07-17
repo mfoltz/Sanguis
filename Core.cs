@@ -13,8 +13,8 @@ internal static class Core
     public static ServerScriptMapper ServerScriptMapper { get; internal set; }
     public static ServerGameManager ServerGameManager => ServerScriptMapper.GetServerGameManager();
     public static PrefabCollectionSystem PrefabCollectionSystem { get; internal set; }
-    public static LocalizationService Localization => new();
-    public static SanguisService SanguisService => new();
+    public static LocalizationService Localization { get; } = new();
+    public static SanguisService SanguisService { get; } = new();
     public static ManualLogSource Log => Plugin.LogInstance;
 
     public static bool hasInitialized;
