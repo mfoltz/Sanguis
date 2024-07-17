@@ -42,7 +42,16 @@ jobs:
 
       - name: Install Thunderstore CLI (tcli)
         run: dotnet tool install --global tcli
-
+        
+      - name: Extract Namespace and Package Name from manifest.json
+        id: extract_manifest
+        run: |
+          namespace=$(jq -r .namespace manifest.json)
+          name=$(jq -r .name manifest.json)
+          echo "##[set-output name=namespace;]$namespace"
+          echo "##[set-output name=name;]$name"
+        shell: bash
+        
       - name: Prepare Thunderstore Package
         run: |
           version=${{ steps.extract_version.outputs.version }}
@@ -53,4 +62,4 @@ jobs:
         shell: bash
 
       - name: Publish build to Thunderstore
-        run: tcli publish --token ${{ secrets.THUNDERSTORE_KEY }} --package-version ${{ env.RELEASE_TAG:1 }} --config ./dist/thunderstore.toml
+        run: tcli publish --token ${{ secrets.THUNDERSTORE_KEY }} --package-version ${{ env.RELEASE_TAG:1 }} --team ${{ steps.extract_manifest.outputs.namespace }} --package ${{ steps.extract_manifest.outputs.name }} --config ./dist/thunderstore.toml
