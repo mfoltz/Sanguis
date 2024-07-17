@@ -16,11 +16,6 @@ jobs:
         uses: actions/setup-dotnet@v2
         with:
           dotnet-version: 7.0.x
-
-      - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v0.9.7
-        with:
-          versionSpec: "5.x"
       
       - name: Checkout
         uses: actions/checkout@v3
@@ -42,13 +37,7 @@ jobs:
       - name: Update manifest.json
         run: |
           version=${{ env.version }}
-          jq --arg version "$version" '.version_number = $version' manifest.json > temp.json && mv temp.json manifest.json
-          
-      - name: Determine Version
-        id: determine_version
-        uses: gittools/actions/gitversion/execute@v0.9.7
-        with:
-          additionalArguments: '/updateprojectfiles /overrideconfig "mode=Mainline"'
+          jq --arg version "$version" '.version_number = $version' manifest.json > temp.json && mv temp.json manifest.json     
       
       - name: Build (Release)
         run: dotnet build . --configuration Release -p:Version=${{ env.version }}
