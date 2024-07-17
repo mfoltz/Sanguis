@@ -43,7 +43,7 @@ jobs:
         run: dotnet build . --configuration Release -p:Version=${{ env.version }}
 
       - name: Publish (Release)
-        run: dotnet publish . --configuration Release --output ./output
+        run: dotnet publish . --configuration Release --output ./output /p:GenerateRuntimeConfigurationFiles=true
 
       - name: Copy build artifacts
         run: |
