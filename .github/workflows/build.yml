@@ -51,7 +51,7 @@ jobs:
           prerelease: true
           tag_name: v${{ env.version }}
           files: |
-            ./Sanguis/bin/Release/net6.0/Sanguis.dll
+            ./bin/Release/net6.0/Sanguis.dll
             CHANGELOG.md
             README.md
             icon.png
