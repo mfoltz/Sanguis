@@ -9,3 +9,11 @@ repository = "https://thunderstore.io"
 
 [publish.categories]
 v-rising = ["1-0-update", "mods", "server"]
+
+[package]
+namespace = "Sanguis"
+name = "zfolmt"
+versionNumber = "1.0.0"
+description = "Reward players for being online with optional daily login bonus!"
+websiteUrl = "https://github.com/mfoltz/Sanguis"
+containsNsfwContent = false
