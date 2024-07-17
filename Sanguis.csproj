@@ -20,8 +20,8 @@
     <Optimize>True</Optimize>
   </PropertyGroup>
 	<ItemGroup>
-		<EmbeddedResource Include="Localization\Prefabs.json" />
-		<EmbeddedResource Include="Localization\English.json" />
+		<EmbeddedResource Include="Localization/Prefabs.json" />
+		<EmbeddedResource Include="Localization/English.json" />
 	</ItemGroup>
 	 <ItemGroup>
     <PackageReference Include="BepInEx.Core" Version="6.0.0-be.668" />
