@@ -9,11 +9,6 @@ repository = "https://thunderstore.io"
 [publish.categories]
 v-rising = ["1-0-update", "mods", "server"]
 
-[build]
-icon = "./icon.png"
-readme = "./README.md"
-outdir = "./build"
-
 [package]
 namespace = "zfolmt"
 name = "Sanguis"
