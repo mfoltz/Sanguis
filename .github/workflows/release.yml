@@ -1,0 +1,65 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  release_on_thunderstore:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '6.0.x'
+          dotnet-quality: 'preview'
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract Latest Tag
+        id: extract_tag
+        run: |
+          latest_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
+          echo "latest_tag=$latest_tag" >> $GITHUB_ENV
+        shell: bash
+
+      - name: Set Release Tag
+        run: echo "RELEASE_TAG=${{ env.latest_tag }}" >> $GITHUB_ENV
+
+      - name: Download Release
+        run: gh release download ${{ env.RELEASE_TAG }} -D ./dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install Thunderstore CLI (tcli)
+        run: dotnet tool install --global tcli
+        
+      - name: Extract Namespace from thunderstore.toml
+        id: extract_namespace
+        run: |
+          namespace=$(grep 'team =' thunderstore.toml | sed 's/team = "\(.*\)"/\1/')
+          echo "namespace=$namespace" >> $GITHUB_ENV
+        shell: bash
+
+      - name: Extract Package Name from manifest.json
+        id: extract_package_name
+        run: |
+          name=$(jq -r .name manifest.json)
+          echo "name=$name" >> $GITHUB_ENV
+        shell: bash
+        
+      - name: Prepare Thunderstore Package
+        run: |
+          version=${{ env.RELEASE_TAG:1 }}
+          mkdir -p ./dist/package
+          cp Sanguis.dll manifest.json CHANGELOG.md README.md icon.png ./dist/package/
+          cd ./dist/package
+          zip -r ../zfolmt-Sanguis-$version.zip .
+        shell: bash
+
+      - name: Publish build to Thunderstore
+        run: tcli publish --token ${{ secrets.THUNDERSTORE_KEY }} --package-version ${{ env.RELEASE_TAG:1 }} --team ${{ env.namespace }} --package ${{ env.name }} --config ./dist/thunderstore.toml

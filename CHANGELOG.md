@@ -1,5 +1,5 @@
 `1.0.0`
-- somewhat arbitrarily changed to 1.0.0 as mod fulfills it's intended purpose without issue (that I'm aware of :P)
+- verifying github release workflow functions as expected
 - commands now use command group
 - added message to players when tokens update
 
