@@ -40,18 +40,7 @@ jobs:
           
       - name: Build (Release)
         run: dotnet build . --configuration Release -p:Version=${{ env.version }}
-
-      - name: Publish (Release)
-        run: dotnet publish . --configuration Release --output ./output /p:GenerateRuntimeConfigurationFiles=true
-          
-      - name: Copy build artifacts
-        run: |
-          mkdir -p release_artifacts
-          cp ./output/Sanguis.dll release_artifacts/
-          cp CHANGELOG.md release_artifacts/
-          cp README.md release_artifacts/
-          cp icon.png release_artifacts/
-          
+     
       - name: GH Release
         uses: softprops/action-gh-release@v1
         if: github.event_name == 'workflow_dispatch'
@@ -62,9 +51,9 @@ jobs:
           prerelease: true
           tag_name: v${{ env.version }}
           files: |
-            release_artifacts/Sanguis.dll
-            release_artifacts/CHANGELOG.md
-            release_artifacts/README.md
-            release_artifacts/icon.png
+            ./Sanguis/bin/Release/net6.0/Sanguis.dll
+            CHANGELOG.md
+            README.md
+            icon.png
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
