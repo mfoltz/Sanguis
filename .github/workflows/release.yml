@@ -4,11 +4,6 @@ on:
   release:
     types: [published]
   workflow_dispatch:
-    inputs:
-      tag_name:
-        required: true
-        description: The tag to release.
-        type: string
 
 jobs:
   release_on_thunderstore:
@@ -25,15 +20,15 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Extract Version from .csproj
-        id: extract_version
+      - name: Extract Latest Tag
+        id: extract_tag
         run: |
-          version=$(xmllint --xpath "string(//Project/PropertyGroup/Version)" Sanguis.csproj)
-          echo "##[set-output name=version;]$version"
+          latest_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
+          echo "latest_tag=$latest_tag" >> $GITHUB_ENV
         shell: bash
 
       - name: Set Release Tag
-        run: echo "RELEASE_TAG=v${{ steps.extract_version.outputs.version }}" >> $GITHUB_ENV
+        run: echo "RELEASE_TAG=${{ env.latest_tag }}" >> $GITHUB_ENV
 
       - name: Download Release
         run: gh release download ${{ env.RELEASE_TAG }} -D ./dist
@@ -43,18 +38,23 @@ jobs:
       - name: Install Thunderstore CLI (tcli)
         run: dotnet tool install --global tcli
         
-      - name: Extract Namespace and Package Name from manifest.json
-        id: extract_manifest
+      - name: Extract Namespace from thunderstore.toml
+        id: extract_namespace
         run: |
-          namespace=$(jq -r .namespace manifest.json)
+          namespace=$(grep 'team =' thunderstore.toml | sed 's/team = "\(.*\)"/\1/')
+          echo "namespace=$namespace" >> $GITHUB_ENV
+        shell: bash
+
+      - name: Extract Package Name from manifest.json
+        id: extract_package_name
+        run: |
           name=$(jq -r .name manifest.json)
-          echo "##[set-output name=namespace;]$namespace"
-          echo "##[set-output name=name;]$name"
+          echo "name=$name" >> $GITHUB_ENV
         shell: bash
         
       - name: Prepare Thunderstore Package
         run: |
-          version=${{ steps.extract_version.outputs.version }}
+          version=${{ env.RELEASE_TAG:1 }}
           mkdir -p ./dist/package
           cp Sanguis.dll manifest.json CHANGELOG.md README.md icon.png ./dist/package/
           cd ./dist/package
@@ -62,4 +62,4 @@ jobs:
         shell: bash
 
       - name: Publish build to Thunderstore
-        run: tcli publish --token ${{ secrets.THUNDERSTORE_KEY }} --package-version ${{ env.RELEASE_TAG:1 }} --team ${{ steps.extract_manifest.outputs.namespace }} --package ${{ steps.extract_manifest.outputs.name }} --config ./dist/thunderstore.toml
+        run: tcli publish --token ${{ secrets.THUNDERSTORE_KEY }} --package-version ${{ env.RELEASE_TAG:1 }} --team ${{ env.namespace }} --package ${{ env.name }} --config ./dist/thunderstore.toml
