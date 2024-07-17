@@ -14,7 +14,7 @@ internal static class Core
     public static ServerGameManager ServerGameManager => ServerScriptMapper.GetServerGameManager();
     public static PrefabCollectionSystem PrefabCollectionSystem { get; internal set; }
     public static LocalizationService Localization { get; } = new();
-    public static SanguisService SanguisService { get; } = new();
+    public static SanguisService SanguisService { get; internal set; } 
     public static ManualLogSource Log => Plugin.LogInstance;
 
     public static bool hasInitialized;
@@ -24,6 +24,7 @@ internal static class Core
 
         ServerScriptMapper = Server.GetExistingSystemManaged<ServerScriptMapper>();
         PrefabCollectionSystem = Server.GetExistingSystemManaged<PrefabCollectionSystem>();
+        SanguisService = new();
         // Initialize utility services
         hasInitialized = true;
     }
