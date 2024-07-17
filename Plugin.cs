@@ -13,6 +13,7 @@ public class Plugin : BasePlugin
 {
     private Harmony _harmony;
     internal static Plugin Instance { get; private set; }
+    public static Harmony Harmony => Instance._harmony;
     public static ManualLogSource LogInstance => Instance.Log;
 
     public static readonly string ConfigPath = Path.Combine(Paths.ConfigPath, MyPluginInfo.PLUGIN_NAME);
@@ -50,10 +51,10 @@ public class Plugin : BasePlugin
 
         _Sanguisystem = InitConfigEntry("Config", "Sanguis", false, "Enable or disable Sanguis.");
         _dailyLogin = InitConfigEntry("Config", "DailyLogin", false, "Enable or disable daily login rewards.");
-        _SanguisReward = InitConfigEntry("Config", "SanguisItemReward", -257494203, "Item prefab for Sanguis redeeming (crystals default).");
+        _SanguisReward = InitConfigEntry("Config", "SanguisItemReward", 576389135, "Item prefab for Sanguis redeeming (crystals default).");
         _dailyReward = InitConfigEntry("Config", "DailyItemReward", -257494203, "Item prefab for daily login (crystals default).");
         _dailyQuantity = InitConfigEntry("Config", "DailyItemQuantity", 50, "Amount rewarded for daily login.");
-        _SanguisRewardRatio = InitConfigEntry("Config", "SanguisRewardFactor", 50, "Sanguis/reward when redeeming.");
+        _SanguisRewardRatio = InitConfigEntry("Config", "SanguisRewardFactor", 6, "Sanguis/reward when redeeming.");
         _SanguisPerMinute = InitConfigEntry("Config", "SanguisPerMinute", 5, "Sanguis/minute spent online.");
         _updateInterval = InitConfigEntry("Config", "SanguisUpdateInterval", 30, "Interval in minutes to update player Sanguis.");
      }

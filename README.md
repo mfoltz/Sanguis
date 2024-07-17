@@ -1,28 +1,26 @@
 ## Table of Contents
 
-Change config values to suit your server economy. NOTE: RENAMING IMMINENT
-
 - [Features](#features)
 - [Commands](#commands)
 - [Configuration](#configuration)
 
 ## Features
 
-- **Sanguis:** Reward players with Sanguis for being online. Can be redeemed in-game for a configurable item reward, Sanguis per minute online and Sanguis per item reward can be configured as well as the update interval.
-- **Daily Login Rewards:** Reward players with a congfigurable item/quantity for logging in once per day. Can be separate from Sanguis item.
+- **Sanguis:** Reward players with Sanguis for being online. Can be redeemed in-game for a configurable item, Sanguis per minute online and Sanguis per item reward can be configured as well as the update interval.
+- **Daily Login:** Reward players with a congfigurable item/quantity for logging in once per day.
 
 ## Commands
 
 ### Sanguis Commands
-- `.redeemSanguis`
-  - Redeem Sanguis for items.
-  - Shortcut: *.rs*
-- `.getSanguis`
-  - Get total Sanguis. Also updates them.
-  - Shortcut: *.get s*
-- `.getDaily`
-  - Get daily time until daily or grants reward if eligible.
-  - Shortcut: *.get d*
+- `.sanguis redeem`
+  - Redeem earned Sanguis.
+  - Shortcut: *.sanguis r*
+- `.sanguis get`
+  - Display total Sanguis.
+  - Shortcut: *.sanguis g*
+- `.sanguis daily`
+  - Display time until daily login bonus or redeem it if available.
+  - Shortcut: *.sanguis d*
  
 ## Configuration
 

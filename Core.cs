@@ -9,25 +9,23 @@ namespace Sanguis;
 
 internal static class Core
 {
-    public static World Server { get; } = GetWorld("Server") ?? throw new System.Exception("There is no Server world (yet)...");
+    public static World Server { get; } = GetWorld("Server") ?? throw new Exception("There is no Server world (yet)...");
     public static EntityManager EntityManager { get; } = Server.EntityManager;
     public static ServerScriptMapper ServerScriptMapper { get; internal set; }
     public static ServerGameManager ServerGameManager => ServerScriptMapper.GetServerGameManager();
     public static PrefabCollectionSystem PrefabCollectionSystem { get; internal set; }
-    public static LocalizationService Localization { get; } = new();
-    public static SanguisService SanguisService { get; internal set; }
+    public static LocalizationService Localization => new();
+    public static SanguisService SanguisService => new();
     public static ManualLogSource Log => Plugin.LogInstance;
 
-    static bool hasInitialized;
+    public static bool hasInitialized;
     public static void Initialize()
     {
         if (hasInitialized) return;
 
         ServerScriptMapper = Server.GetExistingSystemManaged<ServerScriptMapper>();
         PrefabCollectionSystem = Server.GetExistingSystemManaged<PrefabCollectionSystem>();
-        SanguisService = new(); 
         // Initialize utility services
-        Log.LogInfo($"{MyPluginInfo.PLUGIN_NAME}[{MyPluginInfo.PLUGIN_VERSION}] initialized!");
         hasInitialized = true;
     }
     static World GetWorld(string name)
@@ -76,7 +74,6 @@ internal static class Core
                 // If the file does not exist, create a new empty file to avoid errors on initial load.
                 File.Create(path).Dispose();
                 dataStructure = []; // Initialize as empty if file does not exist.
-                Log.LogInfo($"{key} file created as it did not exist.");
                 return;
             }
             try
@@ -93,14 +90,12 @@ internal static class Core
                     dataStructure = data ?? []; // Ensure non-null assignment
                 }
             }
-            catch (IOException ex)
+            catch (IOException)
             {
-                Log.LogError($"Error reading {key} data from file: {ex.Message}");
                 dataStructure = []; // Provide default empty dictionary on error.
             }
-            catch (System.Text.Json.JsonException ex)
+            catch (JsonException)
             {
-                Log.LogError($"JSON deserialization error when loading {key} data: {ex.Message}");
                 dataStructure = []; // Provide default empty dictionary on error.
             }
         }
@@ -110,14 +105,14 @@ internal static class Core
             string path = filePaths[key];
             try
             {
-                string json = System.Text.Json.JsonSerializer.Serialize(data, prettyJsonOptions);
+                string json = JsonSerializer.Serialize(data, prettyJsonOptions);
                 File.WriteAllText(path, json);
             }
             catch (IOException ex)
             {
                 Log.LogError($"Failed to write {key} data to file: {ex.Message}");
             }
-            catch (System.Text.Json.JsonException ex)
+            catch (JsonException ex)
             {
                 Log.LogError($"JSON serialization error when saving {key} data: {ex.Message}");
             }

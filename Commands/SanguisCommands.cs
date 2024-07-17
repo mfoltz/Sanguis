@@ -5,6 +5,8 @@ using Unity.Entities;
 using VampireCommandFramework;
 
 namespace Sanguis.Commands;
+
+[CommandGroup(name: "sanguis")]
 public static class SanguisCommands
 {
     static readonly PrefabGUID tokenReward = new(Plugin.TokenReward);
@@ -13,7 +15,7 @@ public static class SanguisCommands
     static readonly PrefabGUID dailyReward = new(Plugin.DailyReward);
     static readonly int dailyQuantity = Plugin.DailyQuantity;
 
-    [Command(name: "redeemSanguis", shortHand: "rs", adminOnly: false, usage: ".rs", description: "Redeems Sanguis.")]
+    [Command(name: "redeem", shortHand: "r", adminOnly: false, usage: ".sanguis r", description: "Redeems Sanguis.")]
     public static void RedeemSanguisCommand(ChatCommandContext ctx)
     {
         if (!Plugin.TokenSystem)
@@ -56,7 +58,7 @@ public static class SanguisCommands
         }
     }
 
-    [Command(name: "getSanguis", shortHand: "get s", adminOnly: false, usage: ".get s", description: "Shows earned Sanguis, also updates them.")]
+    [Command(name: "get", shortHand: "g", adminOnly: false, usage: ".sanguis g", description: "Shows earned Sanguis, also updates them.")]
     public static void GetSanguisCommand(ChatCommandContext ctx)
     {
 
@@ -79,7 +81,7 @@ public static class SanguisCommands
 
     }
     
-    [Command(name: "getDaily", shortHand: "get d", adminOnly: false, usage: ".get d", description: "Time left until eligible for daily login. Awards daily if eligible.")]
+    [Command(name: "daily", shortHand: "d", adminOnly: false, usage: ".sanguis d", description: "Time left until eligible for daily login. Awards daily if eligible.")]
     public static void GetDailyCommand(ChatCommandContext ctx)
     {
         if (!Plugin.DailyLogin)

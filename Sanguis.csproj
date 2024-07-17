@@ -4,11 +4,16 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
 	<AssemblyName>Sanguis</AssemblyName>
-	<Version>0.2.1</Version>
+	<Version>1.0.0</Version>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-    <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
-	<BepInExPluginGuid>com.zfolmt.Sanguis</BepInExPluginGuid>
-	<LangVersion>latest</LangVersion>
+	  <RestoreSources>
+		  https://api.nuget.org/v3/index.json;
+		  https://nuget.bepinex.dev/v3/index.json;
+	  </RestoreSources>
+	  <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+	  <BepInExPluginGuid>io.zfolmt.Sanguis</BepInExPluginGuid>
+	  <LangVersion>preview</LangVersion>
+	  <EnablePreviewFeatures>true</EnablePreviewFeatures>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -31,14 +36,7 @@
     <PackageReference Include="VRising.Unhollowed.Client" Version="1.0.2.794360001" />
     <PackageReference Include="VRising.VampireCommandFramework" Version="0.9.0" />
     </ItemGroup>
-	<Target Name="CopyDLLsServer" AfterTargets="Build">
-		<Message Text="DLL to V Rising Server" Importance="High" />
+	<Target Name="BuildToServer" AfterTargets="Build">
 		<Copy SourceFiles="$(TargetDir)$(ProjectName).dll" DestinationFolder="C:\Program Files (x86)\Steam\steamapps\common\VRising\VRising_Server\BepInEx\plugins" />
-		<Message Text="DLL Server Copied OK" Importance="High" />
-	</Target>
-	<Target Name="CopyDLLsRepo" AfterTargets="Build">
-		<Message Text="DLL to V Rising Server" Importance="High" />
-		<Copy SourceFiles="$(TargetDir)$(ProjectName).dll" DestinationFolder="C:\Users\mitch\source\Repos\Sanguis" />
-		<Message Text="DLL Server Copied OK" Importance="High" />
-	</Target>    
+	</Target>   
 </Project>
