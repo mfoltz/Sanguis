@@ -47,7 +47,7 @@ jobs:
         with:
           body: Manual pre-release of ${{ env.version }}
           name: v${{ env.version }}
-          fail_on_unmatched_files: true
+          fail_on_unmatched_files: false
           prerelease: true
           tag_name: v${{ env.version }}
           files: |
