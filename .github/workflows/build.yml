@@ -53,7 +53,5 @@ jobs:
           files: |
             ./bin/Release/net6.0/Sanguis.dll
             CHANGELOG.md
-            README.md
-            icon.png
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
