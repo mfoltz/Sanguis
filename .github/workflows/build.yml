@@ -20,10 +20,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0
-          
-      - name: List Localization Directory
-        run: ls -R Localization
+          fetch-depth: 0        
         
       - name: Restore dependencies
         run: dotnet restore
@@ -47,16 +44,6 @@ jobs:
 
       - name: Publish (Release)
         run: dotnet publish . --configuration Release --output ./output /p:GenerateRuntimeConfigurationFiles=true
-
-      - name: Inspect Embedded Resources
-        shell: pwsh
-        run: |
-          $assemblyPath = "./output/Sanguis.dll"
-          $assembly = [System.Reflection.Assembly]::LoadFrom($assemblyPath)
-          $resources = $assembly.GetManifestResourceNames()
-          foreach ($resource in $resources) {
-            Write-Host "Embedded Resource: $resource"
-          }
           
       - name: Copy build artifacts
         run: |
