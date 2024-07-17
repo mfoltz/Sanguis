@@ -39,7 +39,7 @@ jobs:
           sed -i "s/versionNumber = \".*\"/versionNumber = \"${{ env.version }}\"/" thunderstore.toml
           
       - name: Build (Release)
-        run: dotnet build . --configuration Release -p:Version=${{ env.version }}
+        run: dotnet build ./Sanguis --configuration Release -p:Version=${{ env.version }}
      
       - name: GH Release
         uses: softprops/action-gh-release@v1
@@ -47,7 +47,7 @@ jobs:
         with:
           body: Manual pre-release of ${{ env.version }}
           name: v${{ env.version }}
-          fail_on_unmatched_files: false
+          fail_on_unmatched_files: true
           prerelease: true
           tag_name: v${{ env.version }}
           files: |
