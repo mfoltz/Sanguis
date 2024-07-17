@@ -54,7 +54,7 @@ jobs:
         
       - name: Prepare Thunderstore Package
         run: |
-          version=${{ env.RELEASE_TAG#v }}
+          version=${{ env.RELEASE_TAG }}
           mkdir -p ./dist/package
           cp Sanguis.dll manifest.json CHANGELOG.md README.md icon.png ./dist/package/
           cd ./dist/package
@@ -62,4 +62,4 @@ jobs:
         shell: bash
 
       - name: Publish build to Thunderstore
-        run: tcli publish --token ${{ secrets.THUNDERSTORE_KEY }} --package-version ${{ env.RELEASE_TAG#v }} --team ${{ env.namespace }} --package ${{ env.name }} --config ./dist/thunderstore.toml
+        run: tcli publish --token ${{ secrets.THUNDERSTORE_KEY }} --package-version ${{ env.RELEASE_TAG }} --team ${{ env.namespace }} --package ${{ env.name }} --config ./dist/thunderstore.toml
