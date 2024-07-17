@@ -31,7 +31,8 @@ jobs:
         run: echo "RELEASE_TAG=${{ env.latest_tag }}" >> $GITHUB_ENV
 
       - name: Download Release
-        run: gh release download ${{ env.RELEASE_TAG }} -D ./dist
+        run: |
+          gh release download ${{ env.RELEASE_TAG }} -D ./dist
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -56,7 +57,7 @@ jobs:
         run: |
           version=${{ env.RELEASE_TAG }}
           mkdir -p ./dist/package
-          cp Sanguis.dll manifest.json CHANGELOG.md README.md icon.png ./dist/package/
+          cp ./dist/Sanguis.dll ./dist/manifest.json ./dist/CHANGELOG.md ./dist/README.md ./dist/icon.png ./dist/package/
           cd ./dist/package
           zip -r ../zfolmt-Sanguis-$version.zip .
         shell: bash
