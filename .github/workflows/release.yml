@@ -53,12 +53,5 @@ jobs:
           echo "name=$name" >> $GITHUB_ENV
         shell: bash
 
-      - name: Prepare Thunderstore Package
-        run: |
-          version=${{ env.RELEASE_TAG }}
-          cd ./dist
-          zip -r ../zfolmt-Sanguis-$version.zip .
-        shell: bash
-
       - name: Publish build to Thunderstore
-        run: tcli publish --token ${{ secrets.THUNDERSTORE_KEY }} --package-version ${{ env.RELEASE_TAG }} --package-namespace ${{ env.namespace }} --package-name ${{ env.name }} --config-path ./dist/thunderstore.toml
+        run: tcli publish --token ${{ secrets.THUNDERSTORE_KEY }} --package-version ${RELEASE_TAG:1} --package-namespace ${namespace:1} --package-name ${name:1} --config-path .thunderstore.toml
