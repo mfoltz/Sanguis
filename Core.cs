@@ -6,7 +6,6 @@ using System.Text.Json;
 using Unity.Entities;
 
 namespace Sanguis;
-
 internal static class Core
 {
     public static World Server { get; } = GetWorld("Server") ?? throw new Exception("There is no Server world (yet)...");

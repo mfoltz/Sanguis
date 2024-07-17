@@ -20,10 +20,6 @@
     <Optimize>True</Optimize>
   </PropertyGroup>
 	<ItemGroup>
-		<None Remove="Localization\Prefabs.json" />
-		<None Remove="Localization\English.json" />
-	</ItemGroup>
-	<ItemGroup>
 		<EmbeddedResource Include="Localization\Prefabs.json" />
 		<EmbeddedResource Include="Localization\English.json" />
 	</ItemGroup>
