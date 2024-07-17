@@ -61,7 +61,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         if: github.event_name == 'workflow_dispatch'
         with:
-          body: Manual pre-release of ${{ env.version }} for ${{ steps.determine_version.outputs.ShortSha }}
+          body: Manual pre-release of ${{ env.version }}|
           name: v${{ env.version }}
           fail_on_unmatched_files: true
           prerelease: true
