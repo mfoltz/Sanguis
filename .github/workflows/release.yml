@@ -56,9 +56,7 @@ jobs:
       - name: Prepare Thunderstore Package
         run: |
           version=${{ env.RELEASE_TAG }}
-          mkdir -p ./dist/package
-          cp ./dist/Sanguis.dll ./dist/manifest.json ./dist/CHANGELOG.md ./dist/README.md ./dist/icon.png ./dist/package/
-          cd ./dist/package
+          cp ./dist/Sanguis.dll ./dist/manifest.json ./dist/CHANGELOG.md ./dist/README.md ./dist/icon.png
           zip -r ../zfolmt-Sanguis-$version.zip .
         shell: bash
 
