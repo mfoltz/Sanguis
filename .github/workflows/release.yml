@@ -40,4 +40,8 @@ jobs:
         run: dotnet tool install --global tcli
 
       - name: Publish build to Thunderstore
-        run: tcli publish --token ${{ secrets.THUNDERSTORE_KEY }} --package-version ${RELEASE_TAG:1} --config-path .thunderstore.toml
+        run: |
+          trimmed_tag=${RELEASE_TAG:1}
+          tcli publish --token ${{ secrets.THUNDERSTORE_KEY }} --package-version $trimmed_tag --config-path thunderstore.toml
+        env:
+          RELEASE_TAG: ${{ env.RELEASE_TAG }}
