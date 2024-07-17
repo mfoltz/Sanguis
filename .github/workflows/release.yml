@@ -63,4 +63,4 @@ jobs:
         shell: bash
 
       - name: Publish build to Thunderstore
-        run: tcli publish --token ${{ secrets.THUNDERSTORE_KEY }} --package-version ${{ env.RELEASE_TAG }} --team ${{ env.namespace }} --package ${{ env.name }} --config ./dist/thunderstore.toml
+        run: tcli publish --token ${{ secrets.THUNDERSTORE_KEY }} --package-version ${{ env.RELEASE_TAG }} --package-namespace ${{ env.namespace }} --package-name ${{ env.name }} --config-path ./dist/thunderstore.toml
