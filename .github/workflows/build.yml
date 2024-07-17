@@ -48,13 +48,15 @@ jobs:
       - name: Publish (Release)
         run: dotnet publish . --configuration Release --output ./output /p:GenerateRuntimeConfigurationFiles=true
 
-      - name: Install dotnet-ildasm
-        run: dotnet tool install --global dotnet-ildasm
-
       - name: Inspect Embedded Resources
+        shell: pwsh
         run: |
-          ~/.dotnet/tools/dotnet-ildasm --assembly ./output/Sanguis.dll --output ./output/Sanguis.il
-          grep "EmbeddedResource" ./output/Sanguis.il
+          $assemblyPath = "./output/Sanguis.dll"
+          $assembly = [System.Reflection.Assembly]::LoadFrom($assemblyPath)
+          $resources = $assembly.GetManifestResourceNames()
+          foreach ($resource in $resources) {
+            Write-Host "Embedded Resource: $resource"
+          }
           
       - name: Copy build artifacts
         run: |
