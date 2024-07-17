@@ -40,6 +40,6 @@ jobs:
       - name: Publish build to Thunderstore
         run: |
           trimmed_tag=${RELEASE_TAG:1}
-          tcli publish --token ${{ secrets.THUNDERSTORE_KEY }} --package-version $trimmed_tag --config-path thunderstore.toml
+          tcli publish --token ${{ secrets.THUNDERSTORE_KEY }} --package-version $trimmed_tag
         env:
           RELEASE_TAG: ${{ env.RELEASE_TAG }}
