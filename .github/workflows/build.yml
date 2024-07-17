@@ -48,6 +48,14 @@ jobs:
       - name: Publish (Release)
         run: dotnet publish . --configuration Release --output ./output /p:GenerateRuntimeConfigurationFiles=true
 
+      - name: Install dotnet-ildasm
+        run: dotnet tool install --global dotnet-ildasm
+
+      - name: Inspect Embedded Resources
+        run: |
+          ~/.dotnet/tools/dotnet-ildasm --assembly ./output/Sanguis.dll --output ./output/Sanguis.il
+          grep "EmbeddedResource" ./output/Sanguis.il
+          
       - name: Copy build artifacts
         run: |
           mkdir -p release_artifacts
@@ -61,7 +69,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         if: github.event_name == 'workflow_dispatch'
         with:
-          body: Manual pre-release of ${{ env.version }}|
+          body: Manual pre-release of ${{ env.version }}
           name: v${{ env.version }}
           fail_on_unmatched_files: true
           prerelease: true
