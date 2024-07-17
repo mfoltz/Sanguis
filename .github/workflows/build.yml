@@ -32,13 +32,12 @@ jobs:
         id: extract_version
         run: |
           version=$(xmllint --xpath "string(//Project/PropertyGroup/Version)" Sanguis.csproj)
-          echo "version=$version" >> $GITHUB_ENV
+          echo "version=$version" >> $GITHUB_ENV   
           
-      - name: Update manifest.json
+      - name: Update thunderstore.toml
         run: |
-          version=${{ env.version }}
-          jq --arg version "$version" '.version_number = $version' manifest.json > temp.json && mv temp.json manifest.json     
-      
+          sed -i "s/versionNumber = \".*\"/versionNumber = \"${{ env.version }}\"/" thunderstore.toml
+          
       - name: Build (Release)
         run: dotnet build . --configuration Release -p:Version=${{ env.version }}
 
@@ -49,7 +48,6 @@ jobs:
         run: |
           mkdir -p release_artifacts
           cp ./output/Sanguis.dll release_artifacts/
-          cp manifest.json release_artifacts/
           cp CHANGELOG.md release_artifacts/
           cp README.md release_artifacts/
           cp icon.png release_artifacts/
@@ -65,7 +63,6 @@ jobs:
           tag_name: v${{ env.version }}
           files: |
             release_artifacts/Sanguis.dll
-            release_artifacts/manifest.json
             release_artifacts/CHANGELOG.md
             release_artifacts/README.md
             release_artifacts/icon.png
