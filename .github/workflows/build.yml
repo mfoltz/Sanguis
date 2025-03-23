@@ -11,31 +11,28 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v2
         with:
           dotnet-version: 7.0.x
-          
+
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0        
-        
+          fetch-depth: 0
+
       - name: Restore dependencies
         run: dotnet restore
-        
+
       - name: Discover .csproj
         id: discover_csproj
         run: |
-          # Find the first .csproj outside bin/obj directories.
-          # Adjust if you have multiple .csproj files.
           csproj_file=$(find . -type f -name '*.csproj' \
             -not -path '*/bin/*' \
             -not -path '*/obj/*' | head -n 1)
-          
           echo "csproj_file=$csproj_file" >> $GITHUB_OUTPUT
-        
+
       - name: Get DLL name
         id: get_dll_name
         run: |
@@ -52,24 +49,71 @@ jobs:
           version=$(xmllint --xpath "string(//Project/PropertyGroup/Version)" "${{ steps.discover_csproj.outputs.csproj_file }}")
           echo "version=$version" >> $GITHUB_ENV
 
-      - name: Update thunderstore.toml
+      - name: Update thunderstore.toml (deps + version)
         run: |
+          csproj="${{ steps.discover_csproj.outputs.csproj_file }}"
+
+          declare -A TS_MAP=(
+            ["BepInEx.Unity.IL2CPP"]="BepInEx-BepInExPack_V_Rising|1.691.3"
+            ["VRising.VampireCommandFramework"]="deca-VampireCommandFramework|0.9.0"
+          )
+
+          mapfile -t includes < <(xmllint --xpath '//PackageReference/@Include' "$csproj" 2>/dev/null | sed 's/Include="\([^"]*\)"/\1\n/g' | sed '/^$/d')
+          mapfile -t versions < <(xmllint --xpath '//PackageReference/@Version' "$csproj" 2>/dev/null | sed 's/Version="\([^"]*\)"/\1\n/g' | sed '/^$/d')
+
+          DEP_LINES=""
+
+          for i in "${!includes[@]}"; do
+            include="${includes[$i]}"
+            csproj_version="${versions[$i]}"
+
+            if [[ -n "${TS_MAP[$include]}" ]]; then
+              ts_entry="${TS_MAP[$include]}"
+              ts_name="${ts_entry%%|*}"
+              pinned_ts_version="${ts_entry##*|}"
+
+              DEP_LINES+="${ts_name} = \"${pinned_ts_version}\"\n"
+            fi
+          done
+
+          if [[ -n "$DEP_LINES" ]]; then
+            echo "Updating Thunderstore dependencies for recognized packages..."
+            cp thunderstore.toml thunderstore.toml.bak
+
+            if ! grep -q '^\[package.dependencies\]' thunderstore.toml; then
+              echo "" >> thunderstore.toml
+              echo "[package.dependencies]" >> thunderstore.toml
+            fi
+
+            while IFS= read -r dep_line; do
+              dep_key=$(echo "$dep_line" | cut -d'=' -f1 | xargs)
+              dep_val=$(echo "$dep_line" | cut -d'=' -f2- | xargs)
+
+              if grep -q "^$dep_key =" thunderstore.toml; then
+                sed -i "s|^$dep_key = \".*\"|$dep_key = $dep_val|" thunderstore.toml
+              else
+                sed -i "/^\[package.dependencies\]/a $dep_key = $dep_val" thunderstore.toml
+              fi
+            done < <(echo -e "$DEP_LINES")
+          else
+            echo "No recognized Thunderstore dependencies found in $csproj."
+          fi
+
           sed -i "s/versionNumber = \".*\"/versionNumber = \"${{ env.version }}\"/" thunderstore.toml
 
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-
           if [ -n "$(git status --porcelain thunderstore.toml)" ]; then
+            git config user.name "github-actions"
+            git config user.email "github-actions@github.com"
             git add thunderstore.toml
-            git commit -m "chore: Update thunderstore.toml version to ${{ env.version }}"
+            git commit -m "chore: Update thunderstore.toml deps + version to ${{ env.version }}"
             git push
           else
             echo "No changes to commit in thunderstore.toml"
           fi
-          
+
       - name: Build (Release)
         run: dotnet build . --configuration Release -p:Version=${{ env.version }}
-		
+
       - name: GH Release
         uses: softprops/action-gh-release@v1
         if: github.event_name == 'workflow_dispatch'
